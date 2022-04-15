@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>SmartSole Footmap working</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@200&display=swap');
+        body, html, h1 { margin:0; padding:0; height:100%;}
+        body { font-family:'Poppins';}
+        body * { font-weight:200;}
+        #heatmapContainerWrapper { width:0%; height:0%; position:absolute;  top: 10%; right: 30%; bottom: 5%; left: 30%;}
+        #heatmapContainer { background-image: url(https://upload.wikimedia.org/wikipedia/commons/7/78/Shoe_soles.png);
+            background-size: 500px; width:500px; height:600px; background-repeat: no-repeat;}
+        #heatmapLegend { background:white; position:absolute; padding:5px; }
+        #min { float:left; }
+        #max { float:right; }
+        h1 { position:absolute; background:black; color:white; padding:5px; font-weight:200;}
+        #all-examples-info { position:absolute; background:white; font-size:16px; padding:10px; top:100px; width:350px;
+            line-height:150%; border:1px solid rgba(0,0,0,.2);}
+        .pro1{font-family:'Poppins'; font-size: 17px; padding: 40px; position:fixed; left:800px; top:800px;}
+        .pro2{font-family:'Poppins'; font-size: 17px; padding: 40px; position:fixed; left:800px; top:800px;}
+        .more{font-family:'Poppins'; font-size: 17px; padding: 40px; position:fixed; left:50px; top:800px;}
+        .dat{font-family:'Poppins'; font-size: 15px; padding: 40px; position:fixed; left:920px; top:150px;}
+        .dat2{font-family:'Poppins'; font-size: 15px; padding: 40px; position:fixed; left:920px; top:170px;}
+        .hello{font-family:'Poppins'; font-size: 15px; font-weight: bolder; padding: 40px; position:fixed; left:1130px;
+            top:170px; color:#4F77AA;}
+    </style>
+    <script src="http://localhost:8080/heatmap_lib.js"></script>
+    <style>
+        body {
+            margin: 0;
+            font-family:'Poppins';
+        }
+
+        .topnav {
+            overflow: hidden;
+            background-color: #333;
+        }
+
+        .topnav a {
+            float: left;
+            color: #f2f2f2;
+            text-align: center;
+            padding: 14px 16px;
+            text-decoration: none;
+            font-size: 17px;
+        }
+
+        .topnav a:hover {
+            background-color: #ddd;
+            color: black;
+        }
+
+        .topnav a.active {
+            background-color: #4F77AA;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+<div class="topnav">
+    <a href="home">Home</a>
+    <a class="active" href="dashboard"> Dashboard</a>
+    <a href="health">Health Information</a>
+    <a href="contact">Contact</a>
+    <a href="about">About</a>
+</div>
+
+
+<style>
+    table, th, td {border:1px solid black;}
+</style>
+<style>
+    h2,h3 { font-family:'Poppins'; font-size:40px; font-weight:200; padding:40px;}
+    h4 {font-family:'Poppins'; font-size:10px; padding: 40px;}
+    h5 {font-family:'Poppins'; position:fixed; font-weight: bold; font-size:20px; padding: 40px; left:900px; top:70px;}
+    caption { font-family:'Poppins'; font-size:20px; font-weight:200; align:right}
+</style>
+<h2> Welcome, Smarty! </h2>
+<table style="width:25%; margin-left:40px; margin-top:30px">
+    <caption>Sensor Module Legend</caption>
+    <tr>
+        <td>Sensor value (Newtons)</td>
+        <td>Indicator</td>
+    </tr>
+    <tr>
+        <td> 67 and larger </td>
+        <td style="background-color:#ff6961;"> Red </td>
+    </tr>
+    <tr>
+        <td> 43 - 67 </td>
+        <td style="background-color:#ffb347;"> Orange </td>
+    </tr>
+    <tr>
+        <td> 30 - 43 </td>
+        <td style="background-color:#FDFD96;"> Yellow, big </td>
+    </tr>
+    <tr>
+        <td> 19 - 30 </td>
+        <td style="background-color:#FFFFCE;"> Yellow, small </td>
+    </tr>
+    <tr>
+        <td> 11 - 19 </td>
+        <td style="background-color:#64FA72;"> Green, big </td>
+    </tr>
+    <tr>
+        <td> less than 11 </td>
+        <td style="background-color:#B0FFAD;"> Green, small </td>
+    </tr>
+</table>
+
+<h5> Here's some information! </h5>
+<p class="dat" > Based on your gathered data, </p>
+<p class="dat2"> this is your pronation status: </p>
+<p id="output" class="hello"></p>
+
+<text class="pro1" > Pronation is when your ankle rolls too far downward with each step. </text>
+<text class="pro2" > This can lead to strain and instability on your foot, which can lead to things like shin splints. </text>
+<p class="more" > Click <a href="https://www.healthline.com/health/overpronation">here</a> to learn more about pronation!</p>
+
+<pre id="soleData" hidden> {{smartSoleData}} </pre>
+<div id="heatmapContainerWrapper">
+    <div id="heatmapContainer">
+
+    </div>
+
+</div>
+<script type="text/javascript">
+
+    const soleData = document.getElementById('soleData')
+    const jsonDat = JSON.parse(soleData.innerText);
+
+    function readData(data_to_read) {
+        const dat = data_to_read;
+        const jsonDat = JSON.stringify(dat);
+        alert(jsonDat);
+        console.log(data_to_read);
+    }
+    window.onload = function() {
+        // helper function
+        function $(id) {
+            return document.getElementById(id);
+        };
+
+        // create a heatmap instance
+        var heatmap = h337.create({
+            container: document.getElementById('heatmapContainer'),
+            gradient: { .95: '#FF0000', 0.9: '#ffb347', .8: "#FDFD96", .75: "#FDFD96", .65: '#64FA72', 0.6:'#B0FFAD', 0.3:"#0000FF"},
+            maxOpacity: .6,
+            blur: .7,
+        });
+
+        // this is how to call the pronation stats
+        var pronate = JSON.stringify(jsonDat.d[16]);
+        let pron;
+        console.log(pronate)
+        if (pronate > 60) {
+            console.log('yes')
+            pron = "Yes";
+        } else {
+            console.log('No')
+            pron = "No";
+        }
+        document.getElementById('output').innerHTML = pron;
+
+        var generate_heel = function() {
+            var data_mid = {
+                max: 100,
+                min: 0,
+                data: [{ x: JSON.stringify(jsonDat.x[0]), y: JSON.stringify(jsonDat.y[0]), value: JSON.stringify(jsonDat.d[0]), radius: JSON.stringify(jsonDat.r[0])}, { x: JSON.stringify(jsonDat.x[1]), y: JSON.stringify(jsonDat.y[1]), value: JSON.stringify(jsonDat.d[1]), radius: JSON.stringify(jsonDat.r[1])}, { x: JSON.stringify(jsonDat.x[2]), y: JSON.stringify(jsonDat.y[2]), value: JSON.stringify(jsonDat.d[2]), radius: JSON.stringify(jsonDat.r[2])},
+                    { x: JSON.stringify(jsonDat.x[3]), y: JSON.stringify(jsonDat.y[3]), value: JSON.stringify(jsonDat.d[3]), radius: JSON.stringify(jsonDat.r[3])}, { x: JSON.stringify(jsonDat.x[4]), y: JSON.stringify(jsonDat.y[4]), value: JSON.stringify(jsonDat.d[4]), radius: JSON.stringify(jsonDat.r[4])}, { x: JSON.stringify(jsonDat.x[5]), y: JSON.stringify(jsonDat.y[5]), value: JSON.stringify(jsonDat.d[5]), radius: JSON.stringify(jsonDat.r[5])},
+                    { x: JSON.stringify(jsonDat.x[6]), y: JSON.stringify(jsonDat.y[6]), value: JSON.stringify(jsonDat.d[6]), radius: JSON.stringify(jsonDat.r[6])},
+
+                    { x: JSON.stringify(jsonDat.x[7]), y: JSON.stringify(jsonDat.y[7]), value: JSON.stringify(jsonDat.d[7]), radius: JSON.stringify(jsonDat.r[7])}, { x: JSON.stringify(jsonDat.x[8]), y: JSON.stringify(jsonDat.y[8]), value: JSON.stringify(jsonDat.d[8]), radius: JSON.stringify(jsonDat.r[8])}, { x: JSON.stringify(jsonDat.x[9]), y: JSON.stringify(jsonDat.y[9]), value: JSON.stringify(jsonDat.d[9]), radius: JSON.stringify(jsonDat.r[9])},
+                    { x: JSON.stringify(jsonDat.x[10]), y: JSON.stringify(jsonDat.y[10]), value: JSON.stringify(jsonDat.d[10]), radius: JSON.stringify(jsonDat.r[10])},{ x: JSON.stringify(jsonDat.x[11]), y: JSON.stringify(jsonDat.y[11]), value: JSON.stringify(jsonDat.d[11]), radius: JSON.stringify(jsonDat.r[11])}, { x: JSON.stringify(jsonDat.x[12]), y: JSON.stringify(jsonDat.y[12]), value: JSON.stringify(jsonDat.d[12]), radius: JSON.stringify(jsonDat.r[12])},
+                    { x: JSON.stringify(jsonDat.x[13]), y: JSON.stringify(jsonDat.y[13]), value: JSON.stringify(jsonDat.d[13]), radius: JSON.stringify(jsonDat.r[13])}]
+            };
+            heatmap.setData(data_mid);
+        };
+        var generate_middle = function() {
+            var data_mid = {
+                max: 100,
+                min: 0,
+                data: [{ x:JSON.stringify(jsonDat.x[14]), y: JSON.stringify(jsonDat.y[14]), value: JSON.stringify(jsonDat.d[14]), radius: JSON.stringify(jsonDat.r[14])}, { x: JSON.stringify(jsonDat.x[15]), y: JSON.stringify(jsonDat.y[15]), value: JSON.stringify(jsonDat.d[15]), radius: JSON.stringify(jsonDat.r[15])}, { x: JSON.stringify(jsonDat.x[16]), y: JSON.stringify(jsonDat.y[16]), value: JSON.stringify(jsonDat.d[16]), radius: JSON.stringify(jsonDat.r[16])},
+                    { x: JSON.stringify(jsonDat.x[17]), y: JSON.stringify(jsonDat.y[17]), value: JSON.stringify(jsonDat.d[17]), radius: JSON.stringify(jsonDat.r[17])}, { x: JSON.stringify(jsonDat.x[18]), y: JSON.stringify(jsonDat.y[18]), value: JSON.stringify(jsonDat.d[18]), radius: JSON.stringify(jsonDat.r[18])}, { x: JSON.stringify(jsonDat.x[19]), y: JSON.stringify(jsonDat.y[19]), value: JSON.stringify(jsonDat.d[19]), radius: JSON.stringify(jsonDat.r[19])},
+                    { x: JSON.stringify(jsonDat.x[20]), y: JSON.stringify(jsonDat.y[20]), value: JSON.stringify(jsonDat.d[20]), radius: JSON.stringify(jsonDat.r[20])},
+
+                    { x: JSON.stringify(jsonDat.x[21]), y: JSON.stringify(jsonDat.y[21]), value: JSON.stringify(jsonDat.d[21]), radius: JSON.stringify(jsonDat.r[21])}, { x: JSON.stringify(jsonDat.x[22]), y: JSON.stringify(jsonDat.y[22]), value: JSON.stringify(jsonDat.d[22]), radius: JSON.stringify(jsonDat.r[22])}, { x: JSON.stringify(jsonDat.x[23]), y: JSON.stringify(jsonDat.y[23]), value: JSON.stringify(jsonDat.d[23]), radius: JSON.stringify(jsonDat.r[23])},
+                    { x: JSON.stringify(jsonDat.x[24]), y: JSON.stringify(jsonDat.y[24]), value: JSON.stringify(jsonDat.d[24]), radius: JSON.stringify(jsonDat.r[24])},{ x: JSON.stringify(jsonDat.x[25]), y: JSON.stringify(jsonDat.y[25]), value: JSON.stringify(jsonDat.d[25]), radius: JSON.stringify(jsonDat.r[25])}, { x: JSON.stringify(jsonDat.x[26]), y: JSON.stringify(jsonDat.y[26]), value: JSON.stringify(jsonDat.d[26]), radius: JSON.stringify(jsonDat.r[26])},
+                    { x: JSON.stringify(jsonDat.x[27]), y: JSON.stringify(jsonDat.y[27]), value: JSON.stringify(jsonDat.d[27]), radius: JSON.stringify(jsonDat.r[27])}]
+            };
+            heatmap.setData(data_mid);
+        };
+
+        var generate_toe = function() {
+            var data_toe = {
+                max: 100,
+                min: 0,
+                data: [{ x: JSON.stringify(jsonDat.x[28]), y: JSON.stringify(jsonDat.y[28]), value: JSON.stringify(jsonDat.d[28]), radius: JSON.stringify(jsonDat.r[28])}, { x: JSON.stringify(jsonDat.x[29]), y: JSON.stringify(jsonDat.y[29]), value: JSON.stringify(jsonDat.d[29]), radius: JSON.stringify(jsonDat.r[29])}, { x: JSON.stringify(jsonDat.x[30]), y: JSON.stringify(jsonDat.y[30]), value: JSON.stringify(jsonDat.d[30]), radius: JSON.stringify(jsonDat.r[30])},
+                    { x: JSON.stringify(jsonDat.x[31]), y: JSON.stringify(jsonDat.y[31]), value: JSON.stringify(jsonDat.d[31]), radius: JSON.stringify(jsonDat.r[31])}, { x: JSON.stringify(jsonDat.x[32]), y: JSON.stringify(jsonDat.y[32]), value: JSON.stringify(jsonDat.d[32]), radius: JSON.stringify(jsonDat.r[32])}, { x: JSON.stringify(jsonDat.x[33]), y: JSON.stringify(jsonDat.y[33]), value: JSON.stringify(jsonDat.d[33]), radius: JSON.stringify(jsonDat.r[33])},
+                    { x: JSON.stringify(jsonDat.x[34]), y: JSON.stringify(jsonDat.y[34]), value: JSON.stringify(jsonDat.d[34]), radius: JSON.stringify(jsonDat.r[34])},
+
+                    { x: JSON.stringify(jsonDat.x[35]), y: JSON.stringify(jsonDat.y[35]), value: JSON.stringify(jsonDat.d[35]), radius: JSON.stringify(jsonDat.r[35])}, { x: JSON.stringify(jsonDat.x[36]), y: JSON.stringify(jsonDat.y[36]), value: JSON.stringify(jsonDat.d[36]), radius: JSON.stringify(jsonDat.r[36])}, { x: JSON.stringify(jsonDat.x[37]), y: JSON.stringify(jsonDat.y[37]), value: JSON.stringify(jsonDat.d[37]), radius: JSON.stringify(jsonDat.r[37])},
+                    { x: JSON.stringify(jsonDat.x[38]), y: JSON.stringify(jsonDat.y[38]), value: JSON.stringify(jsonDat.d[38]), radius: JSON.stringify(jsonDat.r[38])},{ x: JSON.stringify(jsonDat.x[39]), y: JSON.stringify(jsonDat.y[39]), value: JSON.stringify(jsonDat.d[39]), radius: JSON.stringify(jsonDat.r[39])}, { x: JSON.stringify(jsonDat.x[40]), y: JSON.stringify(jsonDat.y[40]), value: JSON.stringify(jsonDat.d[40]), radius: JSON.stringify(jsonDat.r[40])},
+                    { x: JSON.stringify(jsonDat.x[41]), y: JSON.stringify(jsonDat.y[41]), value: JSON.stringify(jsonDat.d[41]), radius: JSON.stringify(jsonDat.r[41])}]
+            };
+            heatmap.setData(data_toe);
+        };
+
+        // this generates new datapoints in a kind of random timing
+        setTimeout(function test() {generate_heel(); setTimeout(test, 3000); }, 100);
+        setTimeout(function test() {generate_middle(); setTimeout(test, 3000);}, 700);
+        setTimeout(function test() {generate_toe(); setTimeout(test, 3000);}, 1300);
+    };
+
+</script>
+</body>
+</html>
