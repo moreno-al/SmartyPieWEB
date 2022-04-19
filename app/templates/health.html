@@ -4,9 +4,11 @@
     <meta charset="UTF-8">
     <title>Health</title>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@200&display=swap');
+        body { font-family:'Poppins';}
         body {
             margin: 0;
-            font-family: Arial, Helvetica, sans-serif;
+            font-family: 'Poppins';
         }
 
         .topnav {
@@ -29,18 +31,44 @@
         }
 
         .topnav a.active {
-            background-color: #04AA6D;
+            background-color: #4F77AA;
             color: white;
         }
     </style>
 </head>
 <body>
     <div class="topnav">
-        <a class="active" href="#home">Home</a>
-        <a href="pronation">Learn about pronation</a>
-        <a href="#contact">Contact</a>
-        <a href="#about">About</a>
+        <a href="home">Home</a>
+        <a href="dash">Dashboard</a>
+        <a class="active" href="health">Health Information</a>
+        <a href="about">About</a>
+        <a href="contact">Contact</a>
     </div>
-
+    <style>
+        h1 { font-family:'Poppins'; font-size:25px; font-weight:bolder; padding:40px; position:absolute; left:42%; top:5%}
+        h2 { font-family:'Poppins'; font-size:23px; font-weight:200; padding:40px; position:absolute; left:41%; top:23%}
+        h3 { font-family:'Poppins'; font-size:23px; font-weight:200; padding:40px; position:absolute; left:39%; top:37%}
+    </style>
+    <h1> Hey there! </h1>
+    <p style="text-align:center; font-family:'Poppins'; font-size:18px; position:absolute; left:2%; top:15%; margin: 30px 20mm 10% 1em;" >
+        SmarSole was created to empower runners to better visualize their gait. We can only push our boundaries to the
+        limit, if we understand them first. In the world of competitive athletics - small changes are everything.
+        Our device provides users a granular view of their weight distribution as they step so they can make those
+        changes one step at a time. Our dashboard will provide users with important metrics: a heat map visualization of
+        their foot correlated with pressure exerted in newtons, a pronation status, the length of your run in seconds,
+        and finally the length of a single step.
+    </p>
+    <h2> Pronation Status </h2>
+    <p style="text-align:center; font-family:'Poppins'; font-size:18px; position:absolute; left:2%; top:30%; margin: 30px 20mm 10% 1em;" >
+        Let’s dig into what it means for you to pronate. Pronating means you are rolling your foot inwards as you land.
+        As your foot makes contact with the ground your foot is supporting up to three times your body weight, if your
+        foot is not positioned correctly it will fail to absorb shock properly which can lead to serious injuries.
+    </p>
+    <h3> Why should you care? </h3>
+    <p style="text-align:center; font-family:'Poppins'; font-size:18px; position:absolute; left:2%; top:45%; margin: 30px 20mm 10% 1em;" >
+        Small changes are everything. Observing how your foot lands can lead to corrective efforts like consulting
+        with a physical therapist, or buying shoes that support your running style. There are endless solutions -
+        it is up to you to find the problem.
+    </p>
 </body>
 </html>

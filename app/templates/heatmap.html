@@ -2,10 +2,10 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>SmartSole Footmap working</title>
+    <title>SmartSole Dash</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@200&display=swap');
-        body, html, h1 { margin:0; padding:0; height:100%;}
+        body, html, h1 { margin:0; padding:0; height: 100%; overflow: hidden}
         body { font-family:'Poppins';}
         body * { font-weight:200;}
         #heatmapContainerWrapper { width:0%; height:0%; position:absolute;  top: 10%; right: 30%; bottom: 5%; left: 30%;}
@@ -17,13 +17,21 @@
         h1 { position:absolute; background:black; color:white; padding:5px; font-weight:200;}
         #all-examples-info { position:absolute; background:white; font-size:16px; padding:10px; top:100px; width:350px;
             line-height:150%; border:1px solid rgba(0,0,0,.2);}
-        .pro1{font-family:'Poppins'; font-size: 17px; padding: 40px; position:fixed; left:800px; top:800px;}
-        .pro2{font-family:'Poppins'; font-size: 17px; padding: 40px; position:fixed; left:800px; top:800px;}
-        .more{font-family:'Poppins'; font-size: 17px; padding: 40px; position:fixed; left:50px; top:800px;}
-        .dat{font-family:'Poppins'; font-size: 15px; padding: 40px; position:fixed; left:920px; top:150px;}
-        .dat2{font-family:'Poppins'; font-size: 15px; padding: 40px; position:fixed; left:920px; top:170px;}
-        .hello{font-family:'Poppins'; font-size: 15px; font-weight: bolder; padding: 40px; position:fixed; left:1130px;
-            top:170px; color:#4F77AA;}
+        .pro1{font-family:'Poppins'; font-size: 17px; display: flex; padding: 40px; position:fixed; left:800px; top:800px;}
+        .pro2{font-family:'Poppins'; font-size: 17px; display: flex; padding: 40px; position:fixed; left:800px; top:800px;}
+        .more{font-family:'Poppins'; font-size: 17px; display: flex; padding: 40px; position:fixed; left:50px; top:800px;}
+        .dat{font-family:'Poppins'; font-size: 15px; display: flex; padding: 40px; position:fixed; left:1070px; top:150px;}
+        .dat2{font-family:'Poppins'; font-size: 15px; display: flex; padding: 40px; position:fixed; left:1070px; top:170px;}
+        .pronate{font-family:'Poppins'; display: flex; font-size: 15px; font-weight: bolder; padding: 40px; position:fixed;
+            left:1280px; top:170px; color:#4F77AA;}
+        .dat3{font-family:'Poppins'; font-size: 15px; display: flex; padding: 40px; position:fixed; left:1070px; top:300px;}
+        .dat4{font-family:'Poppins'; font-size: 15px; display: flex; padding: 40px; position:fixed; left:1070px; top:320px;}
+        .time{font-family:'Poppins'; display: flex; font-size: 15px; font-weight: bolder; padding: 40px; position:fixed;
+            left:1287px; top:320px; color:#4F77AA;}
+        .dat5{font-family:'Poppins'; font-size: 15px; display: flex; padding: 40px; position:fixed; left:1070px; top:450px;}
+        .dat6{font-family:'Poppins'; font-size: 15px; display: flex; padding: 40px; position:fixed; left:1070px; top:470px;}
+        .step{font-family:'Poppins'; display: flex; font-size: 15px; font-weight:1000 ; padding: 40px; position:fixed;
+            left:1330px; top:470px; color:#4F77AA;}
     </style>
     <script src="http://localhost:8080/heatmap_lib.js"></script>
     <style>
@@ -56,14 +64,15 @@
             color: white;
         }
     </style>
+
 </head>
 <body>
 <div class="topnav">
     <a href="home">Home</a>
-    <a class="active" href="dashboard"> Dashboard</a>
+    <a class="active" href="dash">Dashboard</a>
     <a href="health">Health Information</a>
-    <a href="contact">Contact</a>
     <a href="about">About</a>
+    <a href="contact">Contact</a>
 </div>
 
 
@@ -71,13 +80,14 @@
     table, th, td {border:1px solid black;}
 </style>
 <style>
-    h2,h3 { font-family:'Poppins'; font-size:40px; font-weight:200; padding:40px;}
+    h2,h3 { font-family:'Poppins'; font-size:40px; font-weight:200; padding:40px; position:fixed; left:75px;}
     h4 {font-family:'Poppins'; font-size:10px; padding: 40px;}
-    h5 {font-family:'Poppins'; position:fixed; font-weight: bold; font-size:20px; padding: 40px; left:900px; top:70px;}
+    h5 {font-family:'Poppins'; display: flex; position:fixed; font-weight: bold; font-size:20px; padding: 40px;
+        left:1070px; top:70px;}
     caption { font-family:'Poppins'; font-size:20px; font-weight:200; align:right}
 </style>
 <h2> Welcome, Smarty! </h2>
-<table style="width:25%; margin-left:40px; margin-top:30px">
+<table style="width:25%; position:fixed; margin-left:40px; margin-top:200px">
     <caption>Sensor Module Legend</caption>
     <tr>
         <td>Sensor value (Newtons)</td>
@@ -112,11 +122,19 @@
 <h5> Here's some information! </h5>
 <p class="dat" > Based on your gathered data, </p>
 <p class="dat2"> this is your pronation status: </p>
-<p id="output" class="hello"></p>
+<p id="pronate_output" class="pronate"></p>
 
-<text class="pro1" > Pronation is when your ankle rolls too far downward with each step. </text>
-<text class="pro2" > This can lead to strain and instability on your foot, which can lead to things like shin splints. </text>
-<p class="more" > Click <a href="https://www.healthline.com/health/overpronation">here</a> to learn more about pronation!</p>
+<p class="dat3" > Based on your gathered data, </p>
+<p class="dat4"> this the total time of your run: </p>
+<p id="totalTime" class="time"></p>
+
+<p class="dat5" > Based on your gathered data, </p>
+<p class="dat6"> this the length of one of your steps: </p>
+<p id="stepTime" class="step"></p>
+
+<!--<text class="pro1" > Pronation is when your ankle rolls too far downward with each step. </text>-->
+<!--<text class="pro2" > This can lead to strain and instability on your foot, which can lead to things like shin splints. </text>-->
+<!--<p class="more" > Click <a href="https://www.healthline.com/health/overpronation">here</a> to learn more about pronation!</p>-->
 
 <pre id="soleData" hidden> {{smartSoleData}} </pre>
 <div id="heatmapContainerWrapper">
@@ -161,7 +179,12 @@
             console.log('No')
             pron = "No";
         }
-        document.getElementById('output').innerHTML = pron;
+        document.getElementById('pronate_output').innerHTML = pron;
+
+        var total = JSON.stringify(jsonDat.t[0]);
+        document.getElementById('totalTime').innerHTML = total;
+        var step = JSON.stringify(jsonDat.t[1]);
+        document.getElementById('stepTime').innerHTML = step;
 
         var generate_heel = function() {
             var data_mid = {

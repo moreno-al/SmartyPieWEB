@@ -55,7 +55,7 @@ def home(data=None):
 
 @app.route('/dash', methods=['GET', 'POST'])
 def dashboard(data=None):
-    excel_data_df = pd.read_csv('/Users/alejandramoreno/Documents/Code/capstone2022/SmartSoleBackend/app/resources/finaltest_1.csv')
+    excel_data_df = pd.read_csv('/Users/alejandramoreno/Documents/Code/capstone2022/SmartyPieWEB/app/resources/finaltest_1.csv')
     convert_dict = {'x': int,
                     'y': int,
                     'd': int,
@@ -68,10 +68,17 @@ def dashboard(data=None):
 def pronation(data=None):
     return flask.render_template('health.html')
 
+@app.route('/about', methods=['GET', 'POST'])
+def about(data=None):
+    return flask.render_template('about.html')
+
+@app.route('/contact', methods=['GET', 'POST'])
+def contactUs(data=None):
+    return flask.render_template('contact.html')
+
 @app.route('/dataCollect', methods=['GET', 'POST'])
 async def datCollect(data=None):
     async with BleakClient(ADDY) as client:
-        if (client.is)
         await client.start_notify(TX_UUID, callback)
 
         global lenlist
